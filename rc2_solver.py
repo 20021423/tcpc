@@ -1,141 +1,161 @@
 import time
-
-from pysat.card import CardEnc, EncType
-from pysat.formula import WCNF
 from pysat.examples.rc2 import RC2
+from pysat.formula import WCNF
+from pysat.card import CardEnc, EncType
 
-def read_data(file_path):
-    with open(file_path, 'r') as f:
-        lines = f.readlines()
+
+def read_data(filename):
+    with open(filename, 'r') as file:
+        lines = file.readlines()
 
     num_students = int(lines[0].strip())
     preferences = {}
-
     for line in lines[1:]:
         parts = list(map(int, line.strip().split()))
-        student = parts[0] - 1
-        preferences[student] = [p-1 for p in parts[1:]]
+        preferences[parts[0]] = parts[1:]
 
     return num_students, preferences
 
-# Đường dẫn tới tệp dữ liệu
-file_path = 'data/students_preferences_7.txt'
 
-# Đọc dữ liệu từ tệp
-num_students, preferences = read_data(file_path)
+def calculate_weights(preferences, num_students):
+    out_degrees = {i: 0 for i in range(1, num_students + 1)}
+    for i, friends in preferences.items():
+        out_degrees[i] = len(friends)
 
+    wij = {}
+    wijk = {}
+
+    for i in range(1, num_students + 1):
+        for j in range(i + 1, num_students + 1):
+            subgraph_out_degrees = {
+                v: sum(1 for neighbor in preferences.get(v, []) if neighbor in {i, j})
+                for v in [i, j]
+            }
+            wi = subgraph_out_degrees[i]
+            wj = subgraph_out_degrees[j]
+            wij[(i, j)] = 2 * wi * wj
+        for j in range(i + 1, num_students + 1):
+            for k in range(j + 1, num_students + 1):
+                subgraph_out_degrees = {
+                    v: sum(1 for neighbor in preferences.get(v, []) if neighbor in {i, j, k})
+                    for v in [i, j, k]
+                }
+                wi = subgraph_out_degrees[i]
+                wj = subgraph_out_degrees[j]
+                wk = subgraph_out_degrees[k]
+                wijk[(i, j, k)] = 3 * wi * wj * wk / 8
+    return wij, wijk
+
+
+# Đọc dữ liệu từ file
+num_students, preferences = read_data('data/students_preferences_7.txt')
 print(f"Số lượng học sinh: {num_students}")
 print("Danh sách ưu tiên của học sinh:")
-for student, prefs in preferences.items():
-    print(f"Học sinh {student+1}: {prefs}")
+print(preferences)
 
-# Khởi tạo đối tượng WCNF
-cnf = WCNF()
+# Tính toán trọng số
+wij, wijk = calculate_weights(preferences, num_students)
 
-# Biến số đại diện cho việc hai học sinh ngồi cùng bàn
-# x_ij là biến đại diện cho việc học sinh i và j ngồi cùng bàn cho 2 người
-x_ij = {}
-count = 1
-for i in range(num_students):
-    for j in range(i + 1, num_students):
-        x_ij[(i, j)] = count
-        count += 1
-# x_ijk là biến đại diện cho việc học sinh i, j và k ngồi cùng bàn cho 3 người
-x_ijk = {}
-for i in range(num_students):
-    for j in range(i + 1, num_students):
-        for k in range(j + 1, num_students):
-            x_ijk[(i, j, k)] = count
-            count += 1
+# Create a WCNF formula
+formula = WCNF()
 
-# y_i là biến đại diện cho việc học sinh i ngồi ở bàn cho 2 người
-y_i = {}
-for i in range(num_students):
-    y_i[i] = count
-    count += 1
+# Define Boolean variables
+xij_vars = {}
+xijk_vars = {}
+y_vars = {}
 
-# Cardinality constraints encoding: Mỗi học sinh chỉ ngồi một bàn
-for i in range(num_students):
-    if i == 0:
-        clauses = [x_ij[(i, j)] for j in range(1, num_students)] + \
-                  [x_ijk[(i, j, k)] for j in range(1, num_students - 1) for k in range(j + 1, num_students)]
-    elif i == num_students - 1:
-        clauses = [x_ij[(j, i)] for j in range(0, num_students - 1)] +\
-                  [x_ijk[(j, k, i)] for j in range(0, num_students - 2) for k in range(j + 1, num_students - 1)]
-    else:
-        clauses = [x_ij[(j, i)] for j in range(0, i)] + \
-                  [x_ij[(i, j)] for j in range(i + 1, num_students)] + \
-                  [x_ijk[(j, i, k)] for j in range(0, i) for k in range(i + 1, num_students)] + \
-                  [x_ijk[(i, j, k)] for j in range(i + 1, num_students - 1) for k in range(j + 1, num_students)]
+# Initialize variables
+var_index = 1
+for i in range(1, num_students + 1):
+    for j in range(i + 1, num_students + 1):
+        xij_vars[(i, j)] = var_index
+        var_index += 1
+    for j in range(i + 1, num_students + 1):
+        for k in range(j + 1, num_students + 1):
+            xijk_vars[(i, j, k)] = var_index
+            var_index += 1
+    y_vars[i] = var_index
+    var_index += 1
 
-    cnf.append(clauses)
-    for m in range(len(clauses)):
-        for n in range(m + 1, len(clauses)):
-            cnf.append([-clauses[m], -clauses[n]])
+# Hard clauses for single assignment
+for i in range(1, num_students + 1):
+    clause = []
+    if i == 1:
+        clause = [xij_vars[(i, j)] for j in range(2, num_students + 1)]
+        clause += [xijk_vars[(i, j, k)] for j in range(2, num_students) for k in range(j + 1, num_students + 1)]
+    elif 2 <= i <= num_students - 1:
+        clause = [xij_vars[(j, i)] for j in range(1, i)] + [xij_vars[(i, j)] for j in range(i + 1, num_students + 1)]
+        clause += [xijk_vars[(j, k, i)] for k in range(2, i) for j in range(1, k)] + [xijk_vars[(j, i, k)] for j in
+                                                                                      range(1, i) for k in range(i + 1,
+                                                                                                                 num_students + 1)] + [
+                      xijk_vars[(i, j, k)] for j in range(i + 1, num_students) for k in range(j + 1, num_students + 1)]
+    else:  # i == num_students
+        clause = [xij_vars[(j, i)] for j in range(1, num_students)]
+        clause += [xijk_vars[(j, k, i)] for j in range(1, num_students - 1) for k in range(j + 1, num_students)]
 
-# Ràng buộc cho bàn 2 và 3 người
-for i in range(num_students):
-    # Các ràng buộc đảm bảo mỗi bàn có đúng số học sinh
-    for j in range(i + 1, num_students):
-        cnf.append([-x_ij[(i, j)], y_i[i]])  # Nếu x_ij là đúng thì i và j phải ngồi ở bàn cho 2 người
-        cnf.append([-x_ij[(i, j)], y_i[j]])
-        for k in range(j + 1, num_students):
-            cnf.append([-x_ijk[(i, j, k)], -y_i[i]])  # Nếu x_ijk là đúng thì i, j và k phải ngồi ở bàn cho 3 người
-            cnf.append([-x_ijk[(i, j, k)], -y_i[j]])
-            cnf.append([-x_ijk[(i, j, k)], -y_i[k]])
+    formula.append(clause)
+    for m in range(len(clause)):
+        for n in range(m + 1, len(clause)):
+            formula.append([-clause[m], -clause[n]])
 
-# Đảm bảo đúng số lượng bàn cho 2 người và 3 người
-y_vars = [y_i[i] for i in range(num_students)]
-num_tables_2 = num_students // 7
-num_tables_2 *= 4
-print(num_tables_2, num_students)
-card_constraint = CardEnc.equals(lits=y_vars, bound=num_tables_2, encoding=EncType.seqcounter)
+# Hard clauses for valid table assignments
+for (i, j) in xij_vars:
+    formula.append([-xij_vars[(i, j)], y_vars[i]])
+    formula.append([-xij_vars[(i, j)], y_vars[j]])
+
+for (i, j, k) in xijk_vars:
+    formula.append([-xijk_vars[(i, j, k)], -y_vars[i]])
+    formula.append([-xijk_vars[(i, j, k)], -y_vars[j]])
+    formula.append([-xijk_vars[(i, j, k)], -y_vars[k]])
+
+# Cardinality constraint
+num_tables_2 = int(num_students * 4 / 7)
+card_constraint = CardEnc.equals(lits=list(y_vars.values()), bound=num_tables_2, encoding=EncType.seqcounter)
 for clause in card_constraint.clauses:
-    cnf.append(clause)
+    formula.append(clause)
 
-# Thêm ràng buộc mềm với trọng số
-# Tính trọng số wij
-for i in range(num_students):
-    for j in range(i + 1, num_students):
-        w_i = 1 if j in preferences[i] else 0
-        w_j = 1 if i in preferences[j] else 0
-        w = 2 * (w_i * w_j)
-        if w == 0:
-            cnf.append([-x_ij[(i, j)]])
-        if w > 0:
-            cnf.append([x_ij[(i, j)]], w)
+# Objective: soft constraints for preferences
+for (i, j), weight in wij.items():
+    if weight > 0:
+        formula.append([xij_vars[(i, j)]], weight=weight)
 
-# Tính trọng số wijk
-for i in range(num_students):
-    for j in range(i + 1, num_students - 1):
-        for k in range(j + 1, num_students):
-            w_i = len({j, k} & set(preferences[i]))
-            w_j = len({i, k} & set(preferences[j]))
-            w_k = len({i, j} & set(preferences[k]))
-            w = 3 * ((w_i * w_j * w_k) / 8)
-            if w ==0 :
-                cnf.append([-x_ijk[(i, j, k)]])
-            if w > 0:
-                cnf.append([x_ijk[(i, j, k)]], w)
+for (i, j, k), weight in wijk.items():
+    if weight > 0:
+        formula.append([xijk_vars[(i, j, k)]], weight=weight)
 
-# Sử dụng RC2 để giải bài toán MaxSAT
-solver = RC2(cnf)
-start = time.time()
-solution = solver.compute()
-end = time.time()
-if solution != None:
-    print("Tìm thấy giải pháp tối ưu.")
-    # In ra các cặp học sinh ngồi cùng nhau từ giải pháp
-    print("Các cặp học sinh ngồi cùng nhau:")
-    for i in range(num_students):
-        for j in range(i + 1, num_students):
-            if solution[x_ij[(i, j)] - 1] > 0:
-                print(f"Học sinh {i + 1} và học sinh {j + 1} ngồi cùng nhau.")
+# Solve the model
+solver = RC2(formula)
+start_time = time.time()
 
-        for j in range(i + 1, num_students):
-            for k in range(j + 1, num_students):
-                if solution[x_ijk[(i, j, k)] - 1] > 0:
-                    print(f"Học sinh {i + 1}, học sinh {j + 1} và học sinh {k + 1} ngồi cùng nhau.")
-else:
-    print("Không tìm thấy giải pháp tối ưu.")
-print(end-start)
+try:
+    solution = solver.compute()
+except MemoryError:
+    print("Memory Error: Problem too large to fit in RAM.")
+    solution = None
+
+end_time = time.time()
+elapsed_time = end_time - start_time
+
+# Extract the solution
+assigned_tables = {}
+if solution:
+    for var in solution:
+        if var > 0:
+            if var in xij_vars.values():
+                for key, value in xij_vars.items():
+                    if value == var:
+                        assigned_tables.setdefault(var, []).extend(key)
+            elif var in xijk_vars.values():
+                for key, value in xijk_vars.items():
+                    if value == var:
+                        assigned_tables.setdefault(var, []).extend(key)
+
+# Remove duplicates in groups
+final_assigned_tables = [list(set(students)) for students in assigned_tables.values()]
+
+# Print the results
+print("Assigned tables:", final_assigned_tables)
+
+# Summary
+print(f"Students: {num_students}")
+print(f"Time: {elapsed_time:.2f} seconds")
