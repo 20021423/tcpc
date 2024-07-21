@@ -63,9 +63,13 @@ y_vars = {}
 for i in range(1, num_students + 1):
     for j in range(i + 1, num_students + 1):
         xij_vars[(i, j)] = model.NewBoolVar(f'xij_{i}_{j}')
+
+for i in range(1, num_students + 1):
     for j in range(i + 1, num_students + 1):
         for k in range(j + 1, num_students + 1):
             xijk_vars[(i, j, k)] = model.NewBoolVar(f'xijk_{i}_{j}_{k}')
+
+for i in range(1, num_students + 1):
     y_vars[i] = model.NewBoolVar(f'y_{i}')
 
 # Hard clauses for single assignment
@@ -117,21 +121,23 @@ end_time = time.time()
 elapsed_time = end_time - start_time
 
 # Extract the solution
-assigned_tables = {}
+assigned_tables = []
 if status == cp_model.OPTIMAL or status == cp_model.FEASIBLE:
     for (i, j), var in xij_vars.items():
         if solver.Value(var):
-            assigned_tables.setdefault(var, []).extend((i, j))
+            assigned_tables.append(sorted([i, j]))
     for (i, j, k), var in xijk_vars.items():
         if solver.Value(var):
-            assigned_tables.setdefault(var, []).extend((i, j, k))
+            assigned_tables.append(sorted([i, j, k]))
 
-# Loại bỏ các học sinh trùng lặp trong các nhóm
-final_assigned_tables = [list(set(students)) for students in assigned_tables.values()]
+# Sort the assigned tables
+assigned_tables.sort()
 
-# In kết quả
-print("Assigned tables:", final_assigned_tables)
+# Print the results
+print("Assigned tables:")
+for table in assigned_tables:
+    print(table)
 
-# Tổng kết
+# Summary
 print(f"Students: {num_students}")
 print(f"Time: {elapsed_time:.2f} seconds")
