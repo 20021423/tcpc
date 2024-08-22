@@ -211,7 +211,7 @@ def read_data(filename):
     return num_students, preferences
 
 if __name__ == "__main__":
-    input_data = 'data/max/students_preferences_14.txt'
+    input_data = 'data/students_preferences_14.txt'
     num_students, preferences = read_data(input_data)
 
     # Maximizing encoding

@@ -237,8 +237,8 @@ if __name__ == "__main__":
     #     print("No solution found!")
 
     # Đọc dữ liệu từ thư mục chứa các file input
-    data_directory = 'data/fully/temp/'
-    output_file = 'sat_results.xlsx'
+    data_directory = 'data/'
+    output_file = 'sat_results_2.xlsx'
     results = []
 
     # Lặp qua tất cả các file .txt trong thư mục

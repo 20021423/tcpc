@@ -210,7 +210,7 @@ def read_data(filename):
     return num_students, preferences
 
 if __name__ == "__main__":
-    input_data = 'data/max/students_preferences_7.txt'
+    input_data = 'data/students_preferences_7.txt'
     num_students, preferences = read_data(input_data)
 
     solver = TeamCompositionCPSATSolver(num_students, preferences, encoding_type='min')

@@ -98,7 +98,7 @@ def export_to_excel(results, output_file):
 
 if __name__ == "__main__":
     # Specify the directory containing input files and the output Excel file
-    data_directory = 'data/max/temp/'
+    data_directory = 'data/temp/'
     output_file = 'results_2.xlsx'
 
     # Run solvers on all files in the directory and export results to Excel
