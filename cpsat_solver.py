@@ -210,12 +210,12 @@ def read_data(filename):
     return num_students, preferences
 
 if __name__ == "__main__":
-    input_data = 'data/max/students_preferences_7.txt'
+    input_data = 'data/max/students_preferences_119.txt'
     num_students, preferences = read_data(input_data)
 
-    solver = TeamCompositionCPSATSolver(num_students, preferences, encoding_type='max')
+    solver = TeamCompositionCPSATSolver(num_students, preferences, encoding_type='min')
     assigned_tables, elapsed_time = solver.solve()
-    total_weight = solver.extract_solution_and_calculate_weights(assigned_tables)
+    # total_weight = solver.extract_solution_and_calculate_weights(assigned_tables)
     stats = solver.get_stats()
 
     # Print the results
@@ -223,8 +223,8 @@ if __name__ == "__main__":
     for table in assigned_tables:
         print(table)
     print(f"Students: {num_students}")
-    print(f"Time: {elapsed_time:.2f} seconds")
-    print(f"Total weight: {total_weight}")
+    print(f"Time: {elapsed_time:} seconds")
+    # print(f"Total weight: {total_weight}")
     print(f"Hard clauses: {stats['hard_clauses']}")
     print(f"Soft clauses: {stats['soft_clauses']}")
     print(f"Variables: {stats['variables']}")

@@ -191,11 +191,9 @@ class TeamCompositionSolver:
         # Tính tổng số biến
         num_variables = len(self.xij_vars) + len(self.xijk_vars) + len(self.y_vars)
         return {
-        'hard_clauses': len(self.formula.hard),
         'variables': num_variables,  # Tổng số biến
-        'soft_clauses': len(self.formula.soft),
-        'total_hard_count': self.hard_count,
-        'total_soft_count': self.soft_count
+        'hard_clauses': self.hard_count,
+        'soft_clauses': self.soft_count
     }
 
 
@@ -213,29 +211,29 @@ def read_data(filename):
     return num_students, preferences
 
 if __name__ == "__main__":
-    input_data = 'data/students_preferences_7.txt'
+    input_data = 'data/max/students_preferences_14.txt'
     num_students, preferences = read_data(input_data)
 
-    # # Maximizing encoding
-    # solver_max = TeamCompositionSolver(num_students, preferences, encoding_type='max')
-    # solution_max, elapsed_time_max = solver_max.solve()
-    # final_assigned_tables_max, total_satisfied_weight_max = solver_max.extract_solution_and_calculate_weights(solution_max)
-    # stats_max = solver_max.get_stats()
+    # Maximizing encoding
+    solver_max = TeamCompositionSolver(num_students, preferences, encoding_type='max')
+    solution_max, elapsed_time_max = solver_max.solve()
+    final_assigned_tables_max, total_satisfied_weight_max = solver_max.extract_solution_and_calculate_weights(solution_max)
+    stats_max = solver_max.get_stats()
 
-    # Minimizing encoding
-    solver_min = TeamCompositionSolver(num_students, preferences, encoding_type='min')
-    solution_min, elapsed_time_min = solver_min.solve()
-    final_assigned_tables_min, total_satisfied_weight_min = solver_min.extract_solution_and_calculate_weights(solution_min)
-    stats_min = solver_min.get_stats()
+    # # Minimizing encoding
+    # solver_min = TeamCompositionSolver(num_students, preferences, encoding_type='min')
+    # solution_min, elapsed_time_min = solver_min.solve()
+    # stats_min = solver_min.get_stats()
 
     # Print results
     print(f"Students: {num_students}")
-    # print(f"Hard clauses: {stats_max['hard_clauses']}")
-    # print(f"Variables: {stats_max['variables']}")
-    # print(f"Soft clauses in maximizing encoding: {stats_max['soft_clauses']}")
-    print(f"Soft clauses in minimizing encoding: {stats_min}")
-    # print(f"Time for maximizing encoding: {elapsed_time_max:.2f} seconds")
-    print(f"Time for minimizing encoding: {elapsed_time_min:.2f} seconds")
-    # print(f"Total satisfied weight in maximizing encoding: {total_satisfied_weight_max}")
-    print(f"Total satisfied weight in minimizing encoding: {total_satisfied_weight_min}")
-    print (solver_min.hard_count, solver_min.soft_count)
+    print(f"Hard clauses: {stats_max}")
+    print(f"Time for maximizing encoding: {elapsed_time_max:.2f} seconds")
+    print("Assigned tables:")
+    for table in final_assigned_tables_max:
+        print(table)
+    print(f"Total satisfied weight: {total_satisfied_weight_max}")
+
+    # print(f"Soft clauses in minimizing encoding: {stats_min}")
+    # print(f"Time for minimizing encoding: {elapsed_time_min:} seconds")
+
