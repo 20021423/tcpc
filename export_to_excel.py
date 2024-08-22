@@ -1,8 +1,8 @@
 import os
 import pandas as pd
 from openpyxl import load_workbook
-from team_composition_solver import TeamCompositionSolver, read_data
-from cpsat_solver import TeamCompositionCPSATSolver
+from rc2_solver_tcpc import TeamCompositionSolver, read_data
+from cpsat_solver_tcpc import TeamCompositionCPSATSolver
 
 
 def run_and_export(data_directory, output_file = "results.xlsx"):
@@ -99,7 +99,7 @@ def export_to_excel(results, output_file):
 if __name__ == "__main__":
     # Specify the directory containing input files and the output Excel file
     data_directory = 'data/max/temp/'
-    output_file = 'results_1.xlsx'
+    output_file = 'results_2.xlsx'
 
     # Run solvers on all files in the directory and export results to Excel
     run_and_export(data_directory, output_file)
