@@ -138,20 +138,37 @@ class TeamCompositionSolver:
             if weight > 0:
                 self.formula.append([self.xij_vars[(i, j)]], weight=weight)
                 self.soft_count += 1
-            else:
-                self.formula.append([-self.xij_vars[(i, j)]])
+            # else:
+            #     self.formula.append([-self.xij_vars[(i, j)]])
 
         for (i, j, k), weight in wijk.items():
             if weight > 0:
                 self.formula.append([self.xijk_vars[(i, j, k)]], weight=weight)
                 self.soft_count += 1
-            else:
-                self.formula.append([-self.xijk_vars[(i, j, k)]])
+            # else:
+            #     self.formula.append([-self.xijk_vars[(i, j, k)]])
+
+    def save_wcnf(self, num_students):
+        """ Save the WCNF file with the name 'students_preferences_X.wcnf' in the directory 'wcnf/max/' where X is the number of students. """
+        # Đảm bảo thư mục wcnf/max/ tồn tại
+        directory = "wcnf/max/"
+        os.makedirs(directory, exist_ok=True)
+
+        # Định dạng tên file với X là num_students
+        filename = os.path.join(directory, f"students_preferences_{num_students}.wcnf")
+
+        # Sử dụng hàm có sẵn của WCNF để lưu tệp wcnf
+        self.formula.to_file(filename)
+
+        print(f"WCNF file saved as {filename}")
 
     def solve(self):
         self.add_hard_clauses()
         wij, wijk = self.calculate_weights()
         self.add_soft_clauses(wij, wijk)
+
+        # Call save_wcnf here to save the formula as WCNF before solving
+        self.save_wcnf(self.num_students)
 
         """ Solve the MaxSAT problem using RC2 solver. """
         solver = RC2(self.formula)
@@ -236,4 +253,3 @@ if __name__ == "__main__":
 
     # print(f"Soft clauses in minimizing encoding: {stats_min}")
     # print(f"Time for minimizing encoding: {elapsed_time_min:} seconds")
-

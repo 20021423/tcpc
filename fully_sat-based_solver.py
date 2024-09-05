@@ -214,51 +214,51 @@ def export_to_excel(results, output_file):
 
 
 if __name__ == "__main__":
-    # input_data = 'data/max/students_preferences_126.txt'
-    # num_students, preferences = read_data(input_data)
+    input_data = 'data/max/students_preferences_21.txt'
+    num_students, preferences = read_data(input_data)
+
+    solver = TeamCompositionSolver(num_students, preferences)
+    solution, elapsed_time, solution_found = solver.solve()
+    final_assigned_tables, total_satisfied_weight = solver.extract_solution_and_calculate_weights(solution)
+    stats = solver.get_stats()
+
+    # Print results
+    print(f"Students: {num_students}")
+    print(f"Variables: {stats['variables']}")
+    print(f"Clauses: {stats['clauses']}")
+    print(f"Time for solving: {elapsed_time:.2f} seconds")
+    if solution:
+        print("Solution found!")
+        print("Assigned tables:")
+        for tables in final_assigned_tables:
+            print(tables)
+        print(f"Total satisfied weight: {total_satisfied_weight}")
+    else:
+        print("No solution found!")
+
+    # # Đọc dữ liệu từ thư mục chứa các file input
+    # data_directory = 'data/'
+    # output_file = 'sat_results_2.xlsx'
+    # results = []
     #
-    # solver = TeamCompositionSolver(num_students, preferences)
-    # solution, elapsed_time, solution_found = solver.solve()
-    # # final_assigned_tables, total_satisfied_weight = solver.extract_solution_and_calculate_weights(solution)
-    # stats = solver.get_stats()
+    # # Lặp qua tất cả các file .txt trong thư mục
+    # for filename in os.listdir(data_directory):
+    #     if filename.endswith(".txt"):
+    #         filepath = os.path.join(data_directory, filename)
+    #         num_students, preferences = read_data(filepath)
     #
-    # # Print results
-    # print(f"Students: {num_students}")
-    # print(f"Variables: {stats['variables']}")
-    # print(f"Clauses: {stats['clauses']}")
-    # print(f"Time for solving: {elapsed_time:.2f} seconds")
-    # if solution:
-    #     print("Solution found!")
-    #     # print("Assigned tables:")
-    #     # for table in solution:
-    #     #     print(table)
-    #     # print(f"Total satisfied weight: {total_satisfied_weight}")
-    # else:
-    #     print("No solution found!")
-
-    # Đọc dữ liệu từ thư mục chứa các file input
-    data_directory = 'data/'
-    output_file = 'sat_results_2.xlsx'
-    results = []
-
-    # Lặp qua tất cả các file .txt trong thư mục
-    for filename in os.listdir(data_directory):
-        if filename.endswith(".txt"):
-            filepath = os.path.join(data_directory, filename)
-            num_students, preferences = read_data(filepath)
-
-            solver = TeamCompositionSolver(num_students, preferences)
-            model, elapsed_time, solution_found = solver.solve()
-            stats = solver.get_stats()
-
-            # Lưu kết quả
-            result = {
-                'num_students': num_students,
-                'variables': stats['variables'],
-                'clauses': stats['clauses'],
-                'time': elapsed_time,
-                'result': 'SAT' if solution_found else 'UNSAT'
-            }
-            export_to_excel([result], output_file)
-            print(f"Đã hoàn thành: {filename}")
+    #         solver = TeamCompositionSolver(num_students, preferences)
+    #         model, elapsed_time, solution_found = solver.solve()
+    #         stats = solver.get_stats()
+    #
+    #         # Lưu kết quả
+    #         result = {
+    #             'num_students': num_students,
+    #             'variables': stats['variables'],
+    #             'clauses': stats['clauses'],
+    #             'time': elapsed_time,
+    #             'result': 'SAT' if solution_found else 'UNSAT'
+    #         }
+    #         export_to_excel([result], output_file)
+    #         print(f"Đã hoàn thành: {filename}")
 
