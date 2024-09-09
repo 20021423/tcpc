@@ -236,12 +236,13 @@ def read_data(filename):
 
 
 if __name__ == "__main__":
-    input_data = 'data/students_preferences_35.txt'
+    input_data = 'data/students_preferences_7.txt'
     num_students, preferences = read_data(input_data)
-    encoding_type = 'min'
+    encoding_type = 'max'
     # Maximizing encoding
-    solver_max = TeamCompositionSolver(num_students, preferences, encoding_type='max')
-    final_assigned_tables_max, total_satisfied_weight_max, solve_time = solver_max.solve(timeout=300)
+    solver_max = TeamCompositionSolver(num_students, preferences, encoding_type=encoding_type)
+    final_assigned_tables_max, total_satisfied_weight_max, solve_time = solver_max.solve(timeout=1)
+
 
     if final_assigned_tables_max is not None:
         print(f"{encoding_type} encoding solution found in {solve_time:} seconds.")
