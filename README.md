@@ -28,6 +28,12 @@ Trong dự án này, chúng ta áp dụng các phương pháp mã hóa **SAT Enc
 
 - **`data/`**: Chứa các bộ dữ liệu giả lập được sinh ra từ các thuật toán sinh dữ liệu.
 
+### Công cụ và bộ giải được sử dụng
+- MiniSAT: Được sử dụng cho SAT Encoding.
+- RC2: Được sử dụng cho MaxSAT Encoding.
+- CP-SAT: Được sử dụng để giải bài toán với chiến lược Maximizing và Minimizing Encoding.
+- Open-WBO-Inc: Đã được biên dịch nhưng chưa chạy được do không phù hợp với bài toán này.
+
 ### Tệp cài đặt yêu cầu
 
 - `requirements.txt`: Liệt kê các thư viện Python cần thiết để chạy dự án. Để cài đặt, bạn có thể sử dụng lệnh sau:
@@ -35,8 +41,3 @@ Trong dự án này, chúng ta áp dụng các phương pháp mã hóa **SAT Enc
 ```bash
 pip install -r requirements.txt
 
-### Công cụ và bộ giải được sử dụng
-- MiniSAT: Được sử dụng cho SAT Encoding.
-- RC2: Được sử dụng cho MaxSAT Encoding.
-- CP-SAT: Được sử dụng để giải bài toán với chiến lược Maximizing và Minimizing Encoding.
-- Open-WBO-Inc: Đã được biên dịch nhưng chưa chạy được do không phù hợp với bài toán này.
