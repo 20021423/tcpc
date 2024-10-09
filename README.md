@@ -14,7 +14,7 @@ Trong dự án này, chúng ta áp dụng các phương pháp mã hóa **SAT Enc
 - `cpsat_solver.py`: Mã hóa **MaxSAT Encoding TCPC** với bộ giải **CP-SAT**.
 - `sat_solver.py`: Mã hóa **SAT Encoding TCPC** với bộ giải **MiniSAT**.
 - `gen_fully.py`: Thuật toán sinh dữ liệu cho trường hợp fully-satisfied.
-- `generate_data.py`: Thuật toán sinh dữ liệu cho trường hợp chung (không fully-satisfied).
+- `generate_data.py`: Thuật toán sinh dữ liệu cho trường hợp chung (có thể không fully-satisfied).
 
 ### Tệp kết quả thực nghiệm
 
@@ -30,7 +30,7 @@ Trong dự án này, chúng ta áp dụng các phương pháp mã hóa **SAT Enc
 - MiniSAT: Được sử dụng cho SAT Encoding.
 - RC2: Được sử dụng cho MaxSAT Encoding.
 - CP-SAT: Được sử dụng để giải bài toán với chiến lược Maximizing và Minimizing Encoding.
-- Open-WBO-Inc: Đã được biên dịch nhưng chưa chạy được do không phù hợp với bài toán này.
+
 
 ### Tệp cài đặt yêu cầu
 
