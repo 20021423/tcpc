@@ -42,7 +42,7 @@ def save_data_to_file(num_students, data):
     - num_students (int): The number of students.
     - data (str): The generated formatted data.
     """
-    filename = f"students_preferences_{num_students}.txt"
+    filename = f"max_num_{num_students}.txt"
     with open(filename, 'w') as f:
         f.write(data)
     print(f"Data for {num_students} students saved to {filename}")

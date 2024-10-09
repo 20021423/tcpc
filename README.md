@@ -10,19 +10,17 @@ Trong dự án này, chúng ta áp dụng các phương pháp mã hóa **SAT Enc
 
 ### Các tệp mã nguồn chính
 
-- `rc2_tcpc.py`: Mã hóa **MaxSAT Encoding TCPC** với bộ giải **RC2**.
-- `cpsat_solver_tcpc.py`: Mã hóa **MaxSAT Encoding TCPC** với bộ giải **CP-SAT**.
-- `fully_sat-based_solver.py`: Mã hóa **SAT Encoding TCPC** với bộ giải **MiniSAT**.
+- `rc2_solver_tcpc.py`: Mã hóa **MaxSAT Encoding TCPC** với bộ giải **RC2**.
+- `cpsat_solver.py`: Mã hóa **MaxSAT Encoding TCPC** với bộ giải **CP-SAT**.
+- `sat_solver.py`: Mã hóa **SAT Encoding TCPC** với bộ giải **MiniSAT**.
 - `gen_fully.py`: Thuật toán sinh dữ liệu cho trường hợp fully-satisfied.
 - `generate_data.py`: Thuật toán sinh dữ liệu cho trường hợp chung (không fully-satisfied).
-- `open-wbo-inc_static`: File biên dịch bộ giải **Open-WBO-Inc**, tuy nhiên hiện tại chưa chạy được do không phù hợp với bài toán này.
 
 ### Tệp kết quả thực nghiệm
 
 - `results_final.xlsx`: File kết quả cuối cùng sau khi thực nghiệm với **MaxSAT Encoding** sử dụng các bộ giải **RC2** và **CP-SAT**.
 - `sat_results.xlsx`: File kết quả thực nghiệm với **SAT Encoding**.
-- `maxsat_results.png`: Hình ảnh kết quả chạy MaxSAT.
-- `sat_results.png`: Hình ảnh kết quả chạy SAT.
+
 
 ### Thư mục dữ liệu
 
