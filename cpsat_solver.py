@@ -228,7 +228,7 @@ def read_data(filename):
 
 
 if __name__ == "__main__":
-    input_data = 'data/max/max_num_70.txt'
+    input_data = 'data/max/max_70.txt'
     num_students, preferences = read_data(input_data)
 
     solver = TeamCompositionCPSATSolver(num_students, preferences, encoding_type='min')

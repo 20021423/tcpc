@@ -53,7 +53,6 @@ plt.plot(df_fully["num_students"], df_fully["time_min_cpsat"], marker='o', label
 # Labeling the chart
 plt.xlabel("Số lượng học sinh")
 plt.ylabel("Thời gian (s)")
-plt.title("So sánh thời gian chạy giữa các bộ giải trong trường hợp thỏa mãn hoàn toàn")
 plt.yscale('log')  # Use log scale for better readability of time differences
 plt.grid(True, which="both", linestyle='--', linewidth=0.5)
 plt.legend()
@@ -124,7 +123,6 @@ plt.plot(df_max["num_students"], df_max["time_min_cpsat"], marker='o', label='CP
 # Labeling the chart
 plt.xlabel("Số lượng học sinh")
 plt.ylabel("Thời gian (s)")
-plt.title("So sánh thời gian chạy giữa các bộ giải trong trường hợp thỏa mãn tối đa")
 plt.yscale('log')  # Use log scale for better readability of time differences
 plt.grid(True, which="both", linestyle='--', linewidth=0.5)
 plt.legend()

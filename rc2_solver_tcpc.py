@@ -223,7 +223,7 @@ def read_data(filename):
 
 
 if __name__ == "__main__":
-    input_data = 'data/fully/fully_num_7.txt'
+    input_data = 'data/fully/fully_7.txt'
     num_students, preferences = read_data(input_data)
     encoding_type = 'max'
 

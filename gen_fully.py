@@ -69,7 +69,7 @@ def save_data_to_file(num_students, data, directory="data/fully"):
     os.makedirs(directory, exist_ok=True)
 
     # Define the filename with the directory path
-    filename = os.path.join(directory, f"fully_num_{num_students}.txt")
+    filename = os.path.join(directory, f"fully_{num_students}.txt")
 
     # Write the data to the file
     with open(filename, 'w') as f:
