@@ -14,7 +14,7 @@ Trong dự án này, chúng ta áp dụng các phương pháp mã hóa **SAT Enc
 - `cpsat_solver.py`: Mã hóa **MaxSAT Encoding TCPC** với bộ giải **CP-SAT**.
 - `sat_solver.py`: Mã hóa **SAT Encoding TCPC** với bộ giải **MiniSAT**.
 - `gen_fully.py`: Thuật toán sinh dữ liệu cho trường hợp fully-satisfied.
-- `generate_data.py`: Thuật toán sinh dữ liệu cho trường hợp chung (có thể không fully-satisfied).
+- `gen_max.py`: Thuật toán sinh dữ liệu cho trường hợp chung (có thể không fully-satisfied).
 
 ### Tệp kết quả thực nghiệm
 
